@@ -1,0 +1,13 @@
+# MiniCPM-V
+./llama-minicpmv-cli \
+    -m ggml-model-Q8_0.gguf \
+    --mmproj mmproj-model-f16.gguf \
+    -c 4096 --temp 0.7 --top-p 0.8 --top-k 100 --repeat-penalty 1.05 -ngl 100 \
+    --image test.jpg  -p "Explain diagram"
+
+# Gemma 3
+./llama-gemma3-cli \
+    -m gemma-3-12b-it-Q8_0.gguf \
+    --mmproj mmproj-model-f16.gguf \
+    -ngl 100 \
+    --image test.jpg  -p "Explain diagram"
