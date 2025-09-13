@@ -181,7 +181,7 @@ llama_context::llama_context(
         // graph outputs buffer
         {
             // resized during inference when a batch uses more outputs
-            if ((uint32_t) output_reserve(params.n_seq_max) < params.n_seq_max) {
+            if (output_reserve(params.n_seq_max) < params.n_seq_max) {
                 throw std::runtime_error("failed to reserve initial output buffer");
             }
 
@@ -1447,7 +1447,9 @@ ggml_status llama_context::graph_compute(
     if (backend_cpu != nullptr) {
         auto * reg = ggml_backend_dev_backend_reg(ggml_backend_get_device(backend_cpu));
         auto * set_threadpool_fn = (decltype(ggml_backend_cpu_set_threadpool) *) ggml_backend_reg_get_proc_address(reg, "ggml_backend_cpu_set_threadpool");
-        set_threadpool_fn(backend_cpu, tp);
+        if (set_threadpool_fn) {
+            set_threadpool_fn(backend_cpu, tp);
+        }
     }
 
     // set the number of threads for all the backends
