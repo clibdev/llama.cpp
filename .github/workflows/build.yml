@@ -20,7 +20,8 @@ on:
       '**/*.swift',
       '**/*.m',
       '**/*.metal',
-      '**/*.comp'
+      '**/*.comp',
+      '**/*.glsl'
     ]
 
   pull_request:
@@ -40,7 +41,8 @@ on:
       '**/*.swift',
       '**/*.m',
       '**/*.metal',
-      '**/*.comp'
+      '**/*.comp',
+      '**/*.glsl'
     ]
 
 concurrency:
@@ -68,6 +70,7 @@ jobs:
         with:
           key: macOS-latest-cmake-arm64
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build
         id: cmake_build
@@ -104,6 +107,7 @@ jobs:
         with:
           key: macOS-latest-cmake-x64
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build
         id: cmake_build
@@ -140,6 +144,7 @@ jobs:
         with:
           key: macOS-latest-cmake-arm64-webgpu
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dawn Dependency
         id: dawn-depends
@@ -193,6 +198,7 @@ jobs:
         with:
           key: ubuntu-cpu-cmake-${{ matrix.build }}
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build Dependencies
         id: build_depends
@@ -274,6 +280,7 @@ jobs:
         with:
           key: ubuntu-latest-cmake-sanitizer-${{ matrix.sanitizer }}
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -394,6 +401,7 @@ jobs:
         with:
           key: ubuntu-24-cmake-vulkan-deb
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -429,6 +437,7 @@ jobs:
         with:
           key: ubuntu-24-cmake-vulkan
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -488,6 +497,7 @@ jobs:
         with:
           key: ubuntu-24-cmake-webgpu
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -560,6 +570,7 @@ jobs:
         with:
           key: ubuntu-latest-wasm-webgpu
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Install Emscripten
         run: |
@@ -607,6 +618,7 @@ jobs:
         with:
           key: ubuntu-22-cmake-hip
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build with native CMake HIP support
         id: cmake_build
@@ -639,6 +651,7 @@ jobs:
         with:
           key: ubuntu-22-cmake-musa
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build with native CMake MUSA support
         id: cmake_build
@@ -686,6 +699,7 @@ jobs:
         with:
           key: ubuntu-22-cmake-sycl
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build
         id: cmake_build
@@ -736,6 +750,7 @@ jobs:
         with:
           key: ubuntu-22-cmake-sycl-fp16
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build
         id: cmake_build
@@ -769,6 +784,7 @@ jobs:
         with:
           key: macOS-latest-cmake-ios
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build
         id: cmake_build
@@ -800,6 +816,7 @@ jobs:
         with:
           key: macOS-latest-cmake-tvos
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build
         id: cmake_build
@@ -861,6 +878,7 @@ jobs:
         with:
           key: macOS-latest-swift
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Download xcframework artifact
         uses: actions/download-artifact@v4
@@ -903,6 +921,7 @@ jobs:
           key: windows-msys2
           variant: ccache
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Setup ${{ matrix.sys }}
         uses: msys2/setup-msys2@v2
@@ -971,6 +990,7 @@ jobs:
           key: windows-latest-cmake-${{ matrix.build }}
           variant: ccache
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Download OpenBLAS
         id: get_openblas
@@ -1075,6 +1095,7 @@ jobs:
           with:
             key: ubuntu-latest-cmake-cuda
             evict-old-files: 1d
+            save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
         - name: Build with CMake
           run: |
@@ -1107,6 +1128,7 @@ jobs:
           key: windows-cuda-${{ matrix.cuda }}
           variant: ccache
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Install Cuda Toolkit
         uses: ./.github/actions/windows-setup-cuda
@@ -1158,6 +1180,7 @@ jobs:
           key: windows-latest-cmake-sycl
           variant: ccache
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Install
         run:  |
@@ -1219,6 +1242,7 @@ jobs:
         with:
           key: ${{ github.job }}
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Build
         id: cmake_build
@@ -1464,6 +1488,7 @@ jobs:
         with:
           key: ggml-ci-x64-cpu-low-perf
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -1489,6 +1514,7 @@ jobs:
         with:
           key: ggml-ci-arm64-cpu-low-perf
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -1514,6 +1540,7 @@ jobs:
         with:
           key: ggml-ci-x64-cpu-high-perf
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -1539,6 +1566,7 @@ jobs:
         with:
           key: ggml-ci-arm64-cpu-high-perf
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -1564,6 +1592,7 @@ jobs:
         with:
           key: ggml-ci-arm64-cpu-high-perf-sve
           evict-old-files: 1d
+          save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
       - name: Dependencies
         id: depends
@@ -1699,6 +1728,7 @@ jobs:
          with:
            key: ggml-ci-arm64-cpu-kleidiai
            evict-old-files: 1d
+           save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
        - name: Dependencies
          id: depends
@@ -2082,6 +2112,7 @@ jobs:
          with:
            key: ggml-ci-arm64-graviton4-kleidiai
            evict-old-files: 1d
+           save: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
 
        - name: Test
          id: ggml-ci
