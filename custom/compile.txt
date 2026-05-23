@@ -18,5 +18,3 @@ CUDA_PATH=$PWD/cuda-runtime cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -
 
 cmake --build build -j$(nproc)
 cmake --install build --strip
-
-./build/out/bin/llama-server -m Qwen3.6-27B-UD-Q4_K_XL.gguf -c 262144 -ngl 99 -np 1 -fa on --cache-type-k q4_0 --cache-type-v q4_0
