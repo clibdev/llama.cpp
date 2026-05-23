@@ -32,8 +32,10 @@ static std::set<std::string> get_remote_preset_whitelist(const std::map<std::str
         "batch-size",
         "ubatch-size",
         "cache-reuse",
+        "chat-template-kwargs",
+        "mmap",
         // note: sampling params are automatically allowed by default
-        // negated args will be added automatically
+        // negated args will be added automatically if the positive arg is specified above
     };
 
     std::set<std::string> allowed_keys;
@@ -41,7 +43,7 @@ static std::set<std::string> get_remote_preset_whitelist(const std::map<std::str
     for (const auto & it : key_to_opt) {
         const std::string & key = it.first;
         const common_arg & opt = it.second;
-        if (allowed_options.find(key) != allowed_options.end() || opt.is_sparam) {
+        if (allowed_options.find(key) != allowed_options.end() || opt.is_sampling) {
             allowed_keys.insert(key);
             // also add variant keys (args without leading dashes and env vars)
             for (const auto & arg : opt.get_args()) {
@@ -161,8 +163,13 @@ void common_preset::merge(const common_preset & other) {
     }
 }
 
-void common_preset::apply_to_params(common_params & params) const {
+void common_preset::apply_to_params(common_params & params, const std::set<std::string> & handled_keys) const {
     for (const auto & [opt, val] : options) {
+        if (!handled_keys.empty()) {
+            if (!opt.env || handled_keys.find(opt.env) == handled_keys.end()) {
+                continue;
+            }
+        }
         // apply each option to params
         if (opt.handler_string) {
             opt.handler_string(params, val);
@@ -318,6 +325,11 @@ common_presets common_preset_context::load_from_ini(const std::string & path, co
         }
         LOG_DBG("loading preset: %s\n", preset.name.c_str());
         for (const auto & [key, value] : section.second) {
+            if (key == "version") {
+                // skip version key (reserved for future use)
+                continue;
+            }
+
             LOG_DBG("option: %s = %s\n", key.c_str(), value.c_str());
             if (filter_allowed_keys && allowed_keys.find(key) == allowed_keys.end()) {
                 throw std::runtime_error(string_format(
@@ -334,7 +346,10 @@ common_presets common_preset_context::load_from_ini(const std::string & path, co
                 }
                 LOG_DBG("accepted option: %s = %s\n", key.c_str(), preset.options[opt].c_str());
             } else {
-                // TODO: maybe warn about unknown key?
+                throw std::runtime_error(string_format(
+                    "option '%s' not recognized in preset '%s'",
+                    key.c_str(), preset.name.c_str()
+                ));
             }
         }
 
