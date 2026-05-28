@@ -23,4 +23,12 @@ docker run -it --rm -v ./:/app -u $(id -u):$(id -g) nvidia/cuda:13.0.1-cudnn-dev
     --image test.jpg  -p "Extract the text from the above document as if you were reading it naturally. Return the tables in html format. Return the equations in LaTeX representation. If there is an image in the document and image caption is not present, add a small description of the image inside the <img></img> tag; otherwise, add the image caption inside <img></img>. Watermarks should be wrapped in brackets. Ex: <watermark>OFFICIAL COPY</watermark>. Page numbers should be wrapped in brackets. Ex: <page_number>14</page_number> or <page_number>9/22</page_number>. Prefer using ☐ and ☑ for check boxes."
 
 # Qwen3.6-27B (https://huggingface.co/unsloth/Qwen3.6-27B-GGUF)
-./build/out/bin/llama-server -m Qwen3.6-27B-UD-Q4_K_XL.gguf -c 262144 -ngl 99 -np 1 -fa on --cache-type-k q4_0 --cache-type-v q4_0
+./build/out/bin/llama-server -m Qwen3.6-27B-UD-Q4_K_XL.gguf -c 262144 -ngl 99 -np 1 -fa on -ctk q4_0 -ctv q4_0
+# Qwen3.6-27B (https://huggingface.co/unsloth/Qwen3.6-27B-MTP-GGUF)
+./build/out/bin/llama-server -m Qwen3.6-27B-UD-Q4_K_XL-mtp.gguf -c 262144 -ngl 99 -np 1 -fa on -ctk q4_0 -ctv q4_0 --spec-type draft-mtp --spec-draft-n-max 2 -ub 32
+
+export ANTHROPIC_AUTH_TOKEN=llama-server
+export ANTHROPIC_BASE_URL=http://127.0.0.1:8080
+
+claude --model Qwen3.6-27B-UD-Q4_K_XL.gguf
+claude --model Qwen3.6-27B-UD-Q4_K_XL-mtp.gguf
